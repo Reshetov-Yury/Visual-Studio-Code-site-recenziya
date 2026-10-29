@@ -1,0 +1,1915 @@
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetPageProperty("keywords", "рецензия на судебную экспертизу, оспорить экспертизу");
+$APPLICATION->SetPageProperty("description", "Не согласны с экспертизой? Закажите рецензию на судебную экспертизу в «Бюро экспертиз Решение»! ✓ Наличие сертификатов ✓ Опыт эксперта более 12 лет ✓ Бесплатная консультация 8-923-713-80-47.");
+$APPLICATION->SetPageProperty("title", "Выполним рецензию на судебную экспертизу | «Бюро экспертиз Решение»");
+$APPLICATION->SetTitle("Выполним рецензию на судебную экспертизу | «Бюро экспертиз Решение»");
+?>
+
+<style>
+/* =========================================================
+   Список рецензий по группам
+   Цвета — из фирменной палитры сайта (как в .exp-layout)
+   ========================================================= */
+
+/* ---------- Карта групп над списком ---------- */
+.rv-map {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+  margin: 0 0 48px;
+}
+a.rv-map__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dde2ea;
+  border-radius: 16px;
+  background: #fff;
+  color: #1d1f2a;
+  text-decoration: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+a.rv-map__link:hover,
+a.rv-map__link:focus,
+a.rv-map__link:visited { color: #1d1f2a; text-decoration: none; }
+a.rv-map__link:hover { border-color: #466dae; box-shadow: 0 6px 24px rgba(29, 31, 42, .06); }
+a.rv-map__link:focus-visible { outline: 2px solid #466dae; outline-offset: 2px; }
+.rv-map__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #e8effd;
+  color: #466dae;
+}
+.rv-map__text { min-width: 0; }
+.rv-map__title { display: block; font-size: 15px; font-weight: 500; line-height: 1.3; }
+a.rv-map__link:hover .rv-map__title { color: #466dae; }
+.rv-map__count { display: block; margin-top: 2px; color: #737885; font-size: 13px; line-height: 1.3; }
+
+/* ---------- Группа ---------- */
+.rv-group {
+  scroll-margin-top: 100px;
+  padding: 28px;
+  border-radius: 24px;
+  background: #f4f5f7;
+}
+.rv-group + .rv-group { margin-top: 24px; }
+.rv-group__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.rv-group__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #fff;
+  color: #466dae;
+}
+.rv-group__text { flex: 1 1 auto; min-width: 0; padding-top: 2px; }
+.rv-group__title { margin: 0 0 4px; font-size: 22px; font-weight: 550; line-height: 1.3; }
+.rv-group__desc { margin: 0; color: #737885; font-size: 15px; line-height: 1.45; }
+.rv-group__count {
+  flex: none;
+  margin-top: 4px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: #466dae;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* ---------- Список услуг внутри группы ---------- */
+.rv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+.rv-list__item { margin: 0; padding: 0; }
+.rv-list__item::before { content: none; }
+.rv-list__item + .rv-list__item { border-top: 1px solid #e9ecf1; }
+
+a.rv-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 36px;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 22px;
+  color: #1d1f2a;
+  text-decoration: none;
+  transition: background-color .15s;
+}
+a.rv-item:hover,
+a.rv-item:focus,
+a.rv-item:visited { color: #1d1f2a; text-decoration: none; }
+a.rv-item:hover { background: #f8faff; }
+a.rv-item:focus-visible { outline: 2px solid #466dae; outline-offset: -2px; }
+.rv-item__main { min-width: 0; }
+.rv-item__name {
+  display: block;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+  transition: color .15s;
+}
+a.rv-item:hover .rv-item__name { color: #466dae; }
+.rv-item__tags { display: block; margin-top: 4px; color: #737885; font-size: 14px; line-height: 1.4; }
+.rv-item__meta { min-width: 150px; text-align: right; }
+.rv-item__price { display: block; font-size: 16px; font-weight: 550; line-height: 1.3; white-space: nowrap; }
+.rv-item__days { display: block; margin-top: 3px; color: #737885; font-size: 13px; line-height: 1.3; white-space: nowrap; }
+.rv-item__arrow {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8effd;
+  color: #466dae;
+  transition: background-color .15s, color .15s, transform .15s;
+}
+a.rv-item:hover .rv-item__arrow { background: #466dae; color: #fff; transform: translateX(2px); }
+
+/* ---------- Подвиды: компактные карточки под услугой ---------- */
+.rv-sub {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 2px 22px 20px;
+}
+.rv-sub__label {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  color: #737885;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+a.rv-sub__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #f4f5f7;
+  color: #1d1f2a;
+  text-decoration: none;
+  transition: background-color .15s;
+}
+a.rv-sub__link:hover,
+a.rv-sub__link:focus,
+a.rv-sub__link:visited { color: #1d1f2a; text-decoration: none; }
+a.rv-sub__link:hover { background: #e8effd; }
+a.rv-sub__link:focus-visible { outline: 2px solid #466dae; outline-offset: 2px; }
+.rv-sub__text { flex: 1 1 auto; min-width: 0; }
+.rv-sub__name { display: block; font-size: 14.5px; font-weight: 500; line-height: 1.35; }
+a.rv-sub__link:hover .rv-sub__name { color: #466dae; }
+.rv-sub__tag { display: block; margin-top: 2px; color: #737885; font-size: 12.5px; line-height: 1.3; }
+.rv-sub__arrow { flex: none; display: flex; color: #466dae; transition: transform .15s; }
+a.rv-sub__link:hover .rv-sub__arrow { transform: translateX(2px); }
+
+/* ---------- Планшет ---------- */
+@media (max-width: 991.98px) {
+  .rv-group { padding: 22px; }
+  .rv-sub { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- Телефон ---------- */
+@media (max-width: 767.98px) {
+  .rv-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 32px; }
+  a.rv-map__link { gap: 10px; padding: 10px 12px; }
+  .rv-map__icon { width: 32px; height: 32px; border-radius: 10px; }
+  .rv-map__icon svg { width: 16px; height: 16px; }
+  .rv-map__title { font-size: 13.5px; }
+  .rv-map__count { font-size: 12px; }
+
+  .rv-group { padding: 16px; border-radius: 20px; }
+  .rv-group + .rv-group { margin-top: 16px; }
+  .rv-group__head { flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+  .rv-group__icon { width: 42px; height: 42px; border-radius: 12px; }
+  .rv-group__text { flex-basis: calc(100% - 54px); }
+  .rv-group__title { font-size: 19px; }
+  .rv-group__desc { font-size: 14px; }
+  .rv-group__count { margin: 0 0 0 54px; }
+
+  .rv-list { border-radius: 14px; }
+  a.rv-item {
+    grid-template-columns: minmax(0, 1fr) 32px;
+    grid-template-areas: "main arrow" "meta meta";
+    gap: 10px 12px;
+    padding: 14px 16px;
+  }
+  .rv-item__main { grid-area: main; }
+  .rv-item__meta { grid-area: meta; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; min-width: 0; text-align: left; }
+  .rv-item__arrow { grid-area: arrow; align-self: start; width: 32px; height: 32px; }
+  .rv-item__name { font-size: 16px; }
+  .rv-item__tags { font-size: 13px; }
+  .rv-item__price { font-size: 15px; }
+  .rv-item__days { margin-top: 0; }
+
+  .rv-sub { padding: 0 16px 16px; }
+  a.rv-sub__link { padding: 10px 12px; }
+}
+@media (max-width: 380px) {
+  .rv-map { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.rv-map__link, a.rv-item, .rv-item__name, .rv-item__arrow, a.rv-sub__link, .rv-sub__arrow { transition: none; }
+}
+
+/* =========================================================
+   Первый экран: поиск по ситуации и два пути (суд или досудебка)
+   Кнопки, метки, поле, рамки и цвета — классы и переменные сайта
+   (btn, tag, input, social-hero, border-steel, --pale-light и др.).
+   Здесь только то, чего на сайте нет.
+   ========================================================= */
+.rv-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Голубое окошко внутри контейнера, вокруг белое */
+.rv-hero-wrap { margin-bottom: 64px; }
+.rv-hero {
+  position: relative;
+  padding: 48px 52px;
+  border-radius: 32px;
+  background-color: var(--pale-light);
+}
+.rv-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+  gap: 44px;
+  align-items: start;
+}
+.rv-hero__title { margin-bottom: 16px; }
+.rv-hero__lead { max-width: 600px; margin: 0 0 28px; color: var(--gray); font-size: 17px; line-height: 1.5; }
+
+/* ---------- Поиск: поле .input сайта, выделение как у поиска в шапке ---------- */
+.rv-find { position: relative; max-width: 620px; }
+.rv-find__field { position: relative; }
+.rv-find .rv-find__input {
+  height: 60px;
+  padding: 0 130px 0 24px;
+  border-radius: 60px;
+  background-color: #fff;
+  color: var(--graphite-black);
+  font-size: 16px;
+  -webkit-appearance: none;
+          appearance: none;
+}
+.rv-find .rv-find__input:focus {
+  outline: 0;
+  border-color: var(--blue);
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, .08);
+}
+.rv-find .rv-find__input::placeholder { color: var(--gray); opacity: .75; }
+.rv-find__input::-webkit-search-cancel-button,
+.rv-find__input::-webkit-search-decoration { -webkit-appearance: none; }
+.rv-find .rv-find__btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  bottom: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 26px;
+  border: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.rv-find__drop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 30;
+  border: 1px solid var(--blue-steel);
+  border-radius: 24px;
+  background-color: #fff;
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, .08);
+  overflow: hidden;
+}
+.rv-find__drop[hidden],
+.rv-find__drop [hidden] { display: none !important; }
+.rv-find__list { max-height: 372px; padding: 6px; overflow-y: auto; overscroll-behavior: contain; }
+a.rv-find__opt {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 11px 12px;
+  border-radius: 16px;
+  color: var(--graphite-black);
+  text-decoration: none;
+}
+a.rv-find__opt:hover,
+a.rv-find__opt:focus,
+a.rv-find__opt:visited { color: var(--graphite-black); text-decoration: none; }
+a.rv-find__opt:hover,
+a.rv-find__opt.is-active { background-color: var(--pale-light); }
+.rv-find__opt-main { flex: 1 1 auto; min-width: 0; }
+.rv-find__opt-name {
+  display: block;
+  font-size: 15px;
+  line-height: 1.35;
+  font-variation-settings: var(--wght-550);
+  transition: color .25s;
+}
+a.rv-find__opt:hover .rv-find__opt-name,
+a.rv-find__opt.is-active .rv-find__opt-name { color: var(--blue); }
+.rv-find__opt-group { display: block; margin-top: 2px; color: var(--gray); font-size: 13px; line-height: 1.3; }
+.rv-find__opt-price { flex: none; font-size: 14px; line-height: 1.3; white-space: nowrap; font-variation-settings: var(--wght-550); }
+.rv-find__foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--blue-steel);
+  background-color: var(--pale-light);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.rv-find__hint { display: block; margin-top: 2px; color: var(--gray); font-size: 13px; line-height: 1.4; }
+.rv-find__empty { padding: 18px 18px 20px; }
+.rv-find__empty-title { margin: 0 0 4px; color: var(--graphite-black); font-size: 16px; line-height: 1.35; font-variation-settings: var(--wght-550); }
+.rv-find__empty-text { margin: 0 0 14px; color: var(--gray); font-size: 14px; line-height: 1.45; }
+.rv-find__empty-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; font-size: 15px; }
+.rv-find__empty .rv-find__hint { margin-top: 12px; }
+
+/* ---------- Частые ситуации (метки — .tag.tag--white сайта) ---------- */
+.rv-chips { margin-top: 24px; }
+.rv-chips__label { display: block; margin-bottom: 10px; color: var(--gray); font-size: 14px; line-height: 1.3; }
+.rv-chips__list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Факты о бюро: полоска и строки под ней ---------- */
+.rv-hero .rv-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin: 86px 0 0;      /* от меток до полоски: подобрано так, чтобы строки встали вровень с низом карточек */
+  padding: 20px 0 0;     /* от полоски до строк */
+  border-top: 1px solid var(--blue-steel);
+  list-style: none;
+}
+.rv-facts > li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  color: var(--graphite-black);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.rv-facts > li::before { content: none; }
+.rv-facts__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: url(/local/templates/exper/static/img/icons/icon-content-bg-white.svg) center / contain no-repeat;
+  color: var(--blue);
+}
+
+/* ---------- Два пути: карточки (рамка и скругление — классы сайта) ---------- */
+.rv-hero__doors { display: grid; gap: 14px; }
+.rv-door { padding: 24px 26px 22px; }
+.rv-door__kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: var(--gray);
+  font-size: 14px;
+  line-height: 1.3;
+}
+.rv-door__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: url(/local/templates/exper/static/img/icons/icon-content-bg.svg) center / contain no-repeat;
+  color: var(--blue);
+}
+.rv-door__title { margin: 0 0 8px; font-size: 20px; line-height: 1.3 !important; }
+.rv-door__text { margin: 0 0 16px; color: var(--gray); font-size: 15px; line-height: 1.5; }
+.rv-door__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.rv-door .btn.btn--sm { padding: 13px 20px; font-size: 15px !important; line-height: 1.3; }
+/* Кнопка и мессенджеры в одну строку (на компьютере, где карточки рядом с поиском) */
+@media (min-width: 1200px) {
+  .rv-door__actions--inline { flex-wrap: nowrap; gap: 14px; }
+  .rv-door__actions--inline .btn { flex: none; padding-right: 16px !important; padding-left: 16px !important; }
+  /* если вдруг не хватит места, последний мессенджер перенесётся, но кнопка останется в той же строке */
+  .rv-door__actions--inline .rv-door__msg { min-width: 0; column-gap: 10px; }
+  .rv-door__actions--inline .rv-door__msg > * { white-space: nowrap; }
+}
+a.rv-door__file { display: inline-flex; align-items: center; gap: 10px; color: var(--graphite-black); text-decoration: none; }
+a.rv-door__file:hover .rv-door__file-title { color: var(--blue); }
+.rv-door__file-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--blue-steel);
+  border-radius: 50%;
+  background-color: var(--pale-light);
+  color: var(--blue);
+}
+.rv-door__file-title { display: block; font-size: 14px; line-height: 1.3; font-variation-settings: var(--wght-550); transition: color .25s; }
+.rv-door__file-meta { display: block; margin-top: 1px; color: var(--gray); font-size: 12.5px; line-height: 1.3; }
+.rv-door__msg { font-size: 14px; }
+.rv-msg-label { color: var(--gray); }
+
+/* ---------- Ноутбук и планшет: карточки под поиском, в две колонки ---------- */
+@media (max-width: 1199.98px) {
+  .rv-hero { padding: 38px 36px; }
+  .rv-hero__grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  .rv-hero__doors { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rv-hero__lead { max-width: 640px; }
+}
+
+/* ---------- Телефон ---------- */
+@media (max-width: 767.98px) {
+  .rv-hero-wrap { margin-bottom: 40px; }
+  .rv-hero { padding: 26px 16px; border-radius: 24px; }
+  .rv-hero__lead { margin-bottom: 20px; font-size: 16px; }
+  .rv-hero__doors { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .rv-door { padding: 18px 16px; }
+  .rv-door__title { font-size: 18px; }
+
+  .rv-find .rv-find__input { height: 54px; padding: 0 98px 0 18px; }
+  .rv-find .rv-find__input::placeholder { font-size: 15px; }
+  .rv-find .rv-find__btn { top: 5px; right: 5px; bottom: 5px; padding: 0 18px; font-size: 15px; }
+  a.rv-find__opt { flex-wrap: wrap; gap: 3px 12px; }
+  .rv-find__opt-main { flex-basis: 100%; }
+  .rv-find__opt-price { font-size: 13px; }
+
+  .rv-chips { margin-top: 18px; }
+  .rv-hero .rv-facts { flex-direction: column; gap: 10px; margin-top: 40px; padding-top: 32px; }
+}
+</style>
+
+<section class="mb-5 d-none d-md-block flexible">
+  <div class="container">
+    <div class="row p-md-0">
+      <div class="col-12">
+        <ul class="list breadcrumbs" itemscope itemtype="http://schema.org/BreadcrumbList">
+          <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"> 
+            <a class="breadcrumbs__link" href="/" itemprop="item"> 
+              <span class="breadcrumbs__span" itemprop="name">Главная</span>
+              <span class="breadcrumbs__arrow">/</span> 
+            </a>
+            <meta itemprop="position" content="1" />
+          </li>
+          <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a class="breadcrumbs__link breadcrumbs__link--current"  itemprop="item">
+              <span class="breadcrumbs__span" itemprop="name">Рецензии</span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Первый экран: поиск по ситуации и два пути. Голубое окошко внутри контейнера ===== -->
+<section class="rv-hero-wrap">
+  <div class="container">
+    <div class="rv-hero">
+      <div class="rv-hero__grid">
+
+        <div class="rv-hero__main">
+          <h1 class="h2 rv-hero__title">Выполним рецензию на судебную экспертизу</h1>
+          <p class="rv-hero__lead">Заключение эксперта можно оспорить, если его выводы вызывают сомнения, а исследование содержит ошибки или неполноту. Опишите вашу ситуацию — мы оценим перспективы оспаривания и подскажем возможные варианты действий.</p>
+
+          <div class="rv-find" role="search">
+            <label class="rv-sr" for="rv-find-input">Найти рецензию по виду экспертизы или по ситуации</label>
+            <div class="rv-find__field">
+              <input class="input rv-find__input" id="rv-find-input" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="Например, экспертиза подписи" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="rv-find-list" aria-describedby="rv-find-hint">
+              <button class="btn btn--blue rv-find__btn" type="button">Найти</button>
+            </div>
+            <div class="rv-find__drop" id="rv-find-drop" hidden>
+              <div class="rv-find__list" id="rv-find-list" role="listbox" aria-label="Подходящие рецензии"></div>
+              <div class="rv-find__empty" id="rv-find-empty" hidden></div>
+              <div class="rv-find__foot" id="rv-find-foot" hidden></div>
+            </div>
+            <p class="rv-sr" id="rv-find-hint">Начните вводить, и ниже появятся подходящие рецензии. Стрелками выберите вариант, клавишей Enter перейдите на страницу.</p>
+          </div>
+
+          <div class="rv-chips">
+            <span class="rv-chips__label">Частые ситуации</span>
+            <div class="rv-chips__list">
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-pocherkovedcheskuyu-ekspertizu/">Подпись признали моей</a>
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-otchyet-ob-otsenke/">Оценка занижена</a>
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-avtotekhnicheskuyu-ekspertizu/">Экспертиза по ДТП</a>
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-stroitelnuyu-ekspertizu/">Строительный брак</a>
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-psikhologo-pedagogicheskuyu-ekspertizu/">Спор о ребёнке</a>
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-ekspertizu-narkoticheskikh-sredstv/">Масса наркотика</a>
+              <a class="tag tag--white" href="/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumenta/">Давность документа</a>
+            </div>
+          </div>
+
+          <ul class="rv-facts">
+            <li>
+              <span class="rv-facts__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+              Для любого города, посёлка и деревни России и СНГ
+            </li>
+            <li>
+              <span class="rv-facts__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              Проанализируем ваш запрос в день обращения
+            </li>
+            <li>
+              <span class="rv-facts__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 9-10-5L2 9l10 5 10-5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg></span>
+              Большая команда экспертов, в том числе кандидаты наук
+            </li>
+          </ul>
+        </div>
+
+        <div class="rv-hero__doors">
+          <article class="rv-door bg-white border-radius-24 border-steel">
+            <div class="rv-door__kicker">
+              <span class="rv-door__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><circle cx="11" cy="14" r="3"/><path d="m15 18-1.8-1.8"/></svg></span>
+              Сомневаетесь в выводах эксперта
+            </div>
+            <h2 class="rv-door__title">Бесплатная проверка заключения</h2>
+            <p class="rv-door__text">Пришлите копию экспертизы, и мы скажем, есть ли в ней ошибки и стоит ли заказывать рецензию. Консультация бесплатная.</p>
+            <div class="rv-door__actions">
+              <span class="btn btn--blue btn--sm" role="button" tabindex="0" data-fancybox data-src="#modal-zayavka-new" onclick="ym(54812362,'reachGoal','opzvon')">Отправить на проверку</span>
+              <a class="rv-door__file" href="mailto:my.graphology@yandex.ru" data-goal="pochta_klik">
+                <span class="rv-door__file-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></span>
+                <span>
+                  <span class="rv-door__file-title">Прислать копию на почту</span>
+                  <span class="rv-door__file-meta">my.graphology@yandex.ru</span>
+                </span>
+              </a>
+            </div>
+          </article>
+
+          <article class="rv-door bg-white border-radius-24 border-steel">
+            <div class="rv-door__kicker">
+              <span class="rv-door__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v17"/><path d="M8 20h8"/><path d="M5 7h14"/><path d="M5 7 2 13a3 3 0 0 0 6 0z"/><path d="m19 7-3 6a3 3 0 0 0 6 0z"/></svg></span>
+              Выводы эксперта против вас
+            </div>
+            <h2 class="rv-door__title">Заключение специалиста для суда</h2>
+            <p class="rv-door__text">Рецензию оформляем как заключение специалиста или текст для отзыва юриста. Его приобщают к делу и на его основании просят суд назначить повторную или дополнительную экспертизу.</p>
+            <div class="rv-door__actions rv-door__actions--inline">
+              <span class="btn btn--blue btn--sm" role="button" tabindex="0" data-fancybox data-src="#modal-zayavka-new" onclick="ym(54812362,'reachGoal','opzvon')">Заказать рецензию</span>
+              <div class="social-hero rv-door__msg">
+                <span class="rv-msg-label">или</span>
+                <a class="social-hero__link" href="https://max.ru/u/f9LHodD0cOI4R7zagQO4fneQfAtoaN67jJNDzjrjNCDP5JRNhZqiwffIVE8" target="_blank" rel="nofollow noopener" data-goal="max_klik"><span>MAX</span></a>
+                <a class="social-hero__link" href="https://t.me/expert_reshetov" target="_blank" rel="nofollow noopener" data-goal="telegram_klik"><span>Telegram</span></a>
+                <a class="social-hero__link" href="https://api.whatsapp.com/send/?phone=79237138047" target="_blank" rel="nofollow noopener" data-goal="whatsapp_klik"><span>WhatsApp</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div class="d-flex mb-xxs-16 mb-md-32 align-items-start align-items-lg-center flex-lg-row flex-column">
+      <h2 class="h3 mb-0 mr-3 order-lg-0 order-1">Перечень проводимых рецензий</h2>
+      <span class="tag tag--pale mb-8 mb-lg-0">
+        58 видов
+      </span>
+    </div>
+
+    <nav class="rv-map" aria-label="Группы рецензий">
+      <a class="rv-map__link" href="#tekhniko-kriminalisticheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Технико-криминалистические</span>
+          <span class="rv-map__count">6 видов</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#kriminalisticheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Криминалистические</span>
+          <span class="rv-map__count">8 видов</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#tsifrovye">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Цифровые исследования</span>
+          <span class="rv-map__count">4 вида</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#rechevedcheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Речеведческие</span>
+          <span class="rv-map__count">2 вида</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#psikhologicheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Психологические</span>
+          <span class="rv-map__count">3 вида</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#ekonomicheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M8 17v-4M13 17V8M18 17v-7"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Экономические</span>
+          <span class="rv-map__count">5 видов</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#otsenochnye">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.3 9.3a1 1 0 0 0 1.4 0l8.6-8.6a1 1 0 0 0 0-1.4z"/><circle cx="7" cy="7" r="1.5"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Оценочные и товароведческие</span>
+          <span class="rv-map__count">11 видов</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#stroitelnye">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Строительные и землеустроительные</span>
+          <span class="rv-map__count">2 вида</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#tekhnicheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Технические</span>
+          <span class="rv-map__count">4 вида</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#khimicheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.5 19a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3"/><path d="M7 15h10"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Химические</span>
+          <span class="rv-map__count">7 видов</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#biologicheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/><path d="M3.2 12h6.3l.5-1 2 4.5 2-7 1.5 3.5h5.3"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Биологические и медицинские</span>
+          <span class="rv-map__count">3 вида</span>
+        </span>
+      </a>
+      <a class="rv-map__link" href="#prirodovedcheskie">
+        <span class="rv-map__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.1-6 2.4-.5 4.9-2 5.9-3"/></svg></span>
+        <span class="rv-map__text">
+          <span class="rv-map__title">Природоведческие и экологические</span>
+          <span class="rv-map__count">3 вида</span>
+        </span>
+      </a>
+    </nav>
+
+    <div class="rv mb-70">
+
+      <section class="rv-group" id="tekhniko-kriminalisticheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Технико-криминалистические</h3>
+            <p class="rv-group__desc">Подписи, рукописные тексты, реквизиты и время изготовления документов.</p>
+          </div>
+          <span class="rv-group__count">6 видов</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-pocherkovedcheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на почерковедческую экспертизу</span>
+                <span class="rv-item__tags">Подлинность подписи · Качество образцов</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-tekhnicheskuyu-ekspertizu-dokumentov/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на техническую экспертизу документов</span>
+                <span class="rv-item__tags">Признаки подделки · Подписи и печати</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumenta/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на экспертизу давности документа</span>
+                <span class="rv-item__tags">Дата изготовления · Методика датирования</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 45 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+            <div class="rv-sub">
+              <p class="rv-sub__label">По методу исследования</p>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumentov-vypolnennuyu-po-metodike-minyusta-rossii-gzhkh/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу давности по методике Минюста России (ГЖХ)</span>
+                  <span class="rv-sub__tag">Газожидкостная хроматография</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumentov-vypolnennuyu-metodom-ik-fure-spektroskopii/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу давности методом ИК-Фурье спектроскопии</span>
+                  <span class="rv-sub__tag">ИК-спектроскопия</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumentov-vypolnennuyu-metodom-impulsnoy-yamr-spektroskopii/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу давности методом импульсной ЯМР-спектроскопии</span>
+                  <span class="rv-sub__tag">ЯМР-спектроскопия</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="kriminalisticheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Криминалистические</h3>
+            <p class="rv-group__desc">Следы, оружие, идентификация человека и результаты опроса на полиграфе.</p>
+          </div>
+          <span class="rv-group__count">8 видов</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-daktiloskopicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на дактилоскопическую экспертизу</span>
+                <span class="rv-item__tags">Отпечатки пальцев · Следы рук</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">20 000 – 30 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-trasologicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на трасологическую экспертизу</span>
+                <span class="rv-item__tags">Следы взлома · Следы обуви и шин</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">20 000 – 30 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-ballisticheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на баллистическую экспертизу</span>
+                <span class="rv-item__tags">Огнестрельное оружие · Следы выстрела</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-ekspertizu-kholodnogo-i-metaemogo-oruzhiya/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на экспертизу холодного и метательного оружия</span>
+                <span class="rv-item__tags">Холодное или хозбытовое · Луки и арбалеты</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-vzryvotekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на взрывотехническую экспертизу</span>
+                <span class="rv-item__tags">Взрывные устройства · Причины взрыва</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">35 000 – 50 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-portretnuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на портретную экспертизу</span>
+                <span class="rv-item__tags">Идентификация по фото · Качество изображений</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-odorologicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на одорологическую экспертизу</span>
+                <span class="rv-item__tags">Запаховые следы · Отбор и хранение проб</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-zaklyuchenie-poligrafologa/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на заключение полиграфолога</span>
+                <span class="rv-item__tags">Методика опроса · Допустимость результатов</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="tsifrovye">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Цифровые исследования</h3>
+            <p class="rv-group__desc">Фото, видео, аудиозаписи, компьютеры и смартфоны.</p>
+          </div>
+          <span class="rv-group__count">4 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-fototekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на фототехническую экспертизу</span>
+                <span class="rv-item__tags">Фотомонтаж · Метаданные снимков</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-videotekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на видеотехническую экспертизу</span>
+                <span class="rv-item__tags">Записи с камер · Признаки монтажа</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-fonoskopicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на фоноскопическую экспертизу</span>
+                <span class="rv-item__tags">Идентификация голоса · Расшифровка записей</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-kompyuternuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на компьютерную экспертизу</span>
+                <span class="rv-item__tags">Компьютеры и смартфоны · Цифровые следы</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="rechevedcheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Речеведческие</h3>
+            <p class="rv-group__desc">Смысл высказываний и авторство текстов.</p>
+          </div>
+          <span class="rv-group__count">2 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-lingvisticheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на лингвистическую экспертизу</span>
+                <span class="rv-item__tags">Тексты и высказывания · Оскорбления и клевета</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-avtorovedcheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на автороведческую экспертизу</span>
+                <span class="rv-item__tags">Установление авторства · Тексты и переписка</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="psikhologicheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Психологические</h3>
+            <p class="rv-group__desc">Особенности личности, споры о детях, комплексные исследования текстов и видео.</p>
+          </div>
+          <span class="rv-group__count">3 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-psikhologicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на психологическую экспертизу</span>
+                <span class="rv-item__tags">Методики и тесты · Особенности личности</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 50 000 ₽</span>
+                <span class="rv-item__days">8 – 14 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-psikhologo-pedagogicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на психолого-педагогическую экспертизу</span>
+                <span class="rv-item__tags">Дети и подростки · Споры о воспитании</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-psikhologo-lingvisticheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на психолого-лингвистическую экспертизу</span>
+                <span class="rv-item__tags">Комплексная · Тексты и видео</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="ekonomicheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M8 17v-4M13 17V8M18 17v-7"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Экономические</h3>
+            <p class="rv-group__desc">Учёт, налоги, финансовое состояние, кредиты и расчёт убытков.</p>
+          </div>
+          <span class="rv-group__count">5 видов</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-bukhgalterskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на бухгалтерскую экспертизу</span>
+                <span class="rv-item__tags">Учёт и отчётность · Расчёт недостачи</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">40 000 – 60 000 ₽</span>
+                <span class="rv-item__days">10 – 14 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-nalogovuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на налоговую экспертизу</span>
+                <span class="rv-item__tags">Налоговые доначисления · Споры с ФНС</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">40 000 – 60 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-finansovo-ekonomicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на финансово-экономическую экспертизу</span>
+                <span class="rv-item__tags">Хозяйственные операции · Расчёт убытков</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">40 000 – 60 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-finansovo-analiticheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на финансово-аналитическую экспертизу</span>
+                <span class="rv-item__tags">Финансовое состояние · Преднамеренное банкротство</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">40 000 – 60 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-finansovo-kreditnuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на финансово-кредитную экспертизу</span>
+                <span class="rv-item__tags">Кредиты и займы · Банковские операции</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">40 000 – 60 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="otsenochnye">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.3 9.3a1 1 0 0 0 1.4 0l8.6-8.6a1 1 0 0 0 0-1.4z"/><circle cx="7" cy="7" r="1.5"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Оценочные и товароведческие</h3>
+            <p class="rv-group__desc">Отчёты об оценке, стоимость имущества и качество товаров.</p>
+          </div>
+          <span class="rv-group__count">11 видов</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-otchyet-ob-otsenke/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на отчёт об оценке</span>
+                <span class="rv-item__tags">Соответствие ФСО · Завышение или занижение</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">20 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+            <div class="rv-sub">
+              <p class="rv-sub__label">Недвижимость</p>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-nedvizhimosti/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку недвижимости</span>
+                  <span class="rv-sub__tag">Жилая и коммерческая</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-kvartiry/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку квартиры</span>
+                  <span class="rv-sub__tag">Рыночная стоимость</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-doma/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку дома</span>
+                  <span class="rv-sub__tag">Дом с участком</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-zemelnykh-uchastkov/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку земельных участков</span>
+                  <span class="rv-sub__tag">ИЖС, СНТ, сельхозземли</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <p class="rv-sub__label">Бизнес и имущество</p>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-biznesa/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку бизнеса</span>
+                  <span class="rv-sub__tag">Доли в ООО</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-predpriyatiya/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку предприятия</span>
+                  <span class="rv-sub__tag">Имущественный комплекс</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-tsennykh-bumag/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку ценных бумаг</span>
+                  <span class="rv-sub__tag">Акции, облигации, векселя</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-imushchestva/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку имущества</span>
+                  <span class="rv-sub__tag">Раздел и наследство</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-otsenku-avtomobilya/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на оценку автомобиля</span>
+                  <span class="rv-sub__tag">Ущерб после ДТП</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+            </div>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-tovarovedcheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на товароведческую экспертизу</span>
+                <span class="rv-item__tags">Качество товара · Стоимость и износ</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="stroitelnye">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Строительные и землеустроительные</h3>
+            <p class="rv-group__desc">Дефекты строительства, стоимость работ и границы участков.</p>
+          </div>
+          <span class="rv-group__count">2 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-stroitelnuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на строительную экспертизу</span>
+                <span class="rv-item__tags">Дефекты и недоделки · Стоимость работ</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 45 000 ₽</span>
+                <span class="rv-item__days">8 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-zemleustroitelnuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на землеустроительную экспертизу</span>
+                <span class="rv-item__tags">Границы участков · Реестровая ошибка</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="tekhnicheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Технические</h3>
+            <p class="rv-group__desc">ДТП, пожары, электрика, оборудование и механизмы.</p>
+          </div>
+          <span class="rv-group__count">4 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-avtotekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на автотехническую экспертизу</span>
+                <span class="rv-item__tags">Механизм ДТП · Расчёт скорости</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-pozharno-tekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на пожарно-техническую экспертизу</span>
+                <span class="rv-item__tags">Очаг и причина пожара · Пожарная безопасность</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 45 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-elektrotekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на электротехническую экспертизу</span>
+                <span class="rv-item__tags">Электросети и проводка · Причины замыкания</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-inzhenerno-tekhnicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на инженерно-техническую экспертизу</span>
+                <span class="rv-item__tags">Оборудование и механизмы · Причины поломки</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="khimicheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.5 19a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3"/><path d="M7 15h10"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Химические</h3>
+            <p class="rv-group__desc">Состав веществ, наркотические средства и лабораторные анализы.</p>
+          </div>
+          <span class="rv-group__count">7 видов</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-khimicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на химическую экспертизу</span>
+                <span class="rv-item__tags">Состав веществ · Лабораторные анализы</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 50 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-ekspertizu-narkoticheskikh-sredstv/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на экспертизу наркотических средств</span>
+                <span class="rv-item__tags">Масса и состав · Уголовные дела</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">40 000 – 50 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+            <div class="rv-sub">
+              <p class="rv-sub__label">По виду вещества</p>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-marikhuany-kannabisa/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу марихуаны (каннабиса)</span>
+                  <span class="rv-sub__tag">Растительные</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-n-metilefedrona-i-ego-proizvodnykh-pvp/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу N-метилэфедрона и его производных (PVP)</span>
+                  <span class="rv-sub__tag">Синтетические стимуляторы</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-metamfetamina-pervitina/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу метамфетамина (первитина)</span>
+                  <span class="rv-sub__tag">Синтетические стимуляторы</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-kokaina/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу кокаина</span>
+                  <span class="rv-sub__tag">Психостимуляторы</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+              <a href="/recenzirovanie/retsenziya-na-ekspertizu-spaysov-sinteticheskikh-kannabinoidov/" class="rv-sub__link">
+                <span class="rv-sub__text">
+                  <span class="rv-sub__name">Рецензия на экспертизу спайсов (синтетических каннабиноидов)</span>
+                  <span class="rv-sub__tag">Курительные смеси</span>
+                </span>
+                <span class="rv-sub__arrow" aria-hidden="true"><svg width="12" height="11" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="biologicheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/><path d="M3.2 12h6.3l.5-1 2 4.5 2-7 1.5 3.5h5.3"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Биологические и медицинские</h3>
+            <p class="rv-group__desc">ДНК, биологические следы, вред здоровью и врачебные ошибки.</p>
+          </div>
+          <span class="rv-group__count">3 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-geneticheskuyu-ekspertizu-dnk-analiza/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на генетическую экспертизу ДНК анализа</span>
+                <span class="rv-item__tags">Установление родства · Идентификация по ДНК</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-biologicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на биологическую экспертизу</span>
+                <span class="rv-item__tags">Биологические следы · Кровь, волосы, ткани</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 50 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-meditsinskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на медицинскую экспертизу</span>
+                <span class="rv-item__tags">Вред здоровью · Врачебные ошибки</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">30 000 – 40 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="rv-group" id="prirodovedcheskie">
+        <header class="rv-group__head">
+          <span class="rv-group__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.1-6 2.4-.5 4.9-2 5.9-3"/></svg></span>
+          <div class="rv-group__text">
+            <h3 class="rv-group__title">Природоведческие и экологические</h3>
+            <p class="rv-group__desc">Растения, почва и вред окружающей среде.</p>
+          </div>
+          <span class="rv-group__count">3 вида</span>
+        </header>
+        <ul class="rv-list">
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-botanicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на ботаническую экспертизу</span>
+                <span class="rv-item__tags">Растительные объекты · Видовая принадлежность</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 40 000 ₽</span>
+                <span class="rv-item__days">8 – 12 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-pochvovedcheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на почвоведческую экспертизу</span>
+                <span class="rv-item__tags">Образцы почвы · Загрязнение земель</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 35 000 ₽</span>
+                <span class="rv-item__days">12 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+          <li class="rv-list__item">
+            <a href="/recenzirovanie/retsenziya-na-ekologicheskuyu-ekspertizu/" class="rv-item">
+              <span class="rv-item__main">
+                <span class="rv-item__name">Рецензия на экологическую экспертизу</span>
+                <span class="rv-item__tags">Вред окружающей среде · Загрязнения и выбросы</span>
+              </span>
+              <span class="rv-item__meta">
+                <span class="rv-item__price">25 000 – 50 000 ₽</span>
+                <span class="rv-item__days">10 – 16 дней</span>
+              </span>
+              <span class="rv-item__arrow" aria-hidden="true"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5732 5.25586L7.37793 1.06055L8.43848 7.29029e-07L13.9141 5.47559C14.0546 5.61623 14.1338 5.80701 14.1338 6.00586C14.1337 6.20464 14.0546 6.39556 13.9141 6.53613L8.43848 12.0117L7.37793 10.9512L11.5732 6.75586L2.95308e-07 6.75586L2.29741e-07 5.25586L11.5732 5.25586Z" fill="currentColor"></path></svg></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   Поиск рецензии по виду экспертизы или ситуации
+   Берёт услуги прямо из списка ниже: новую строку в списке поиск найдёт сам.
+   ========================================================= */
+(function () {
+  var hero = document.querySelector('.rv-hero');
+  var input = document.getElementById('rv-find-input');
+  if (!hero || !input) return;
+
+  var box = hero.querySelector('.rv-find');
+  var btn = hero.querySelector('.rv-find__btn');
+  var drop = document.getElementById('rv-find-drop');
+  var list = document.getElementById('rv-find-list');
+  var empty = document.getElementById('rv-find-empty');
+  var foot = document.getElementById('rv-find-foot');
+  var MAX = 'https://max.ru/u/f9LHodD0cOI4R7zagQO4fneQfAtoaN67jJNDzjrjNCDP5JRNhZqiwffIVE8';
+  var TG = 'https://t.me/expert_reshetov';
+
+  function goal(name) {
+    try { if (typeof ym === 'function') ym(54812362, 'reachGoal', name); } catch (e) {}
+  }
+
+  /* Слова, которыми люди описывают свою беду. Помогают найти услугу, даже если человек не знает её названия.
+     Для новой услуги можно добавить строку: 'адрес страницы': 'слова через пробел' */
+  var KEYS = {
+    '/recenzirovanie/retsenziya-na-pocherkovedcheskuyu-ekspertizu/': 'подпись почерк подпись не моя подпись признали моей подделка подписи расписка завещание договор доверенность образцы почерка',
+    '/recenzirovanie/retsenziya-tekhnicheskuyu-ekspertizu-dokumentov/': 'подделка документа печать штамп подчистка дописка монтаж документа реквизиты бланк',
+    '/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumenta/': 'давность задним числом дата документа когда подписан возраст документа',
+    '/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumentov-vypolnennuyu-po-metodike-minyusta-rossii-gzhkh/': 'гжх хроматография растворители минюст давность',
+    '/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumentov-vypolnennuyu-metodom-ik-fure-spektroskopii/': 'ик фурье спектроскопия давность',
+    '/recenzirovanie/retsenziya-na-ekspertizu-davnosti-dokumentov-vypolnennuyu-metodom-impulsnoy-yamr-spektroskopii/': 'ямр спектроскопия давность',
+    '/recenzirovanie/retsenziya-na-daktiloskopicheskuyu-ekspertizu/': 'отпечатки пальцев отпечаток следы рук',
+    '/recenzirovanie/retsenziya-na-trasologicheskuyu-ekspertizu/': 'следы обувь шины взлом замок орудие',
+    '/recenzirovanie/retsenziya-na-ballisticheskuyu-ekspertizu/': 'оружие огнестрельное пистолет ружье выстрел пуля гильза',
+    '/recenzirovanie/retsenziya-na-ekspertizu-kholodnogo-i-metaemogo-oruzhiya/': 'нож холодное оружие кинжал лук арбалет хозяйственно бытовой',
+    '/recenzirovanie/retsenziya-na-vzryvotekhnicheskuyu-ekspertizu/': 'взрыв взрывчатка взрывное устройство граната пиротехника',
+    '/recenzirovanie/retsenziya-na-portretnuyu-ekspertizu/': 'лицо фото внешность опознание идентификация по фото',
+    '/recenzirovanie/retsenziya-na-odorologicheskuyu-ekspertizu/': 'запах запаховые следы собака кинолог',
+    '/recenzirovanie/retsenziya-na-zaklyuchenie-poligrafologa/': 'полиграф детектор лжи',
+    '/recenzirovanie/retsenziya-na-fototekhnicheskuyu-ekspertizu/': 'фото фотография фотошоп монтаж снимок',
+    '/recenzirovanie/retsenziya-na-videotekhnicheskuyu-ekspertizu/': 'видео видеозапись камера видеонаблюдение монтаж регистратор',
+    '/recenzirovanie/retsenziya-na-fonoskopicheskuyu-ekspertizu/': 'голос аудиозапись аудио диктофон запись разговора',
+    '/recenzirovanie/retsenziya-na-kompyuternuyu-ekspertizu/': 'компьютер телефон смартфон переписка файлы флешка',
+    '/recenzirovanie/retsenziya-na-lingvisticheskuyu-ekspertizu/': 'текст слова оскорбление клевета угроза экстремизм высказывание переписка пост',
+    '/recenzirovanie/retsenziya-na-avtorovedcheskuyu-ekspertizu/': 'автор авторство кто написал анонимка',
+    '/recenzirovanie/retsenziya-na-psikhologicheskuyu-ekspertizu/': 'психолог личность аффект показания сделка моральный вред',
+    '/recenzirovanie/retsenziya-na-psikhologo-pedagogicheskuyu-ekspertizu/': 'ребенок дети развод место жительства воспитание опека общение с ребенком',
+    '/recenzirovanie/retsenziya-na-psikhologo-lingvisticheskuyu-ekspertizu/': 'психолог лингвист манипуляция давление видео',
+    '/recenzirovanie/retsenziya-na-bukhgalterskuyu-ekspertizu/': 'бухгалтерия учет отчетность недостача растрата',
+    '/recenzirovanie/retsenziya-na-nalogovuyu-ekspertizu/': 'налоги налоговая фнс доначисление',
+    '/recenzirovanie/retsenziya-na-finansovo-ekonomicheskuyu-ekspertizu/': 'убытки ущерб хозяйственные операции финансы',
+    '/recenzirovanie/retsenziya-na-finansovo-analiticheskuyu-ekspertizu/': 'банкротство преднамеренное фиктивное финансовое состояние',
+    '/recenzirovanie/retsenziya-na-finansovo-kreditnuyu-ekspertizu/': 'кредит займ проценты долг',
+    '/recenzirovanie/retsenziya-na-otchyet-ob-otsenke/': 'оценка отчет об оценке рыночная стоимость занижена завышена фсо оценщик',
+    '/recenzirovanie/retsenziya-na-otsenku-nedvizhimosti/': 'недвижимость помещение здание',
+    '/recenzirovanie/retsenziya-na-otsenku-kvartiry/': 'квартира',
+    '/recenzirovanie/retsenziya-na-otsenku-doma/': 'дом коттедж',
+    '/recenzirovanie/retsenziya-na-otsenku-zemelnykh-uchastkov/': 'земля участок ижс снт',
+    '/recenzirovanie/retsenziya-na-otsenku-biznesa/': 'бизнес доля ооо компания',
+    '/recenzirovanie/retsenziya-na-otsenku-predpriyatiya/': 'предприятие завод',
+    '/recenzirovanie/retsenziya-na-otsenku-tsennykh-bumag/': 'акции облигации векселя ценные бумаги',
+    '/recenzirovanie/retsenziya-na-otsenku-imushchestva/': 'имущество раздел наследство развод',
+    '/recenzirovanie/retsenziya-na-otsenku-avtomobilya/': 'машина автомобиль',
+    '/recenzirovanie/retsenziya-na-tovarovedcheskuyu-ekspertizu/': 'товар брак качество износ магазин',
+    '/recenzirovanie/retsenziya-na-stroitelnuyu-ekspertizu/': 'стройка строительство ремонт брак дефекты подрядчик застройщик смета залив',
+    '/recenzirovanie/retsenziya-na-zemleustroitelnuyu-ekspertizu/': 'граница участка межевание забор кадастр реестровая ошибка соседи',
+    '/recenzirovanie/retsenziya-na-avtotekhnicheskuyu-ekspertizu/': 'дтп авария скорость машина виновник',
+    '/recenzirovanie/retsenziya-na-pozharno-tekhnicheskuyu-ekspertizu/': 'пожар возгорание очаг поджог',
+    '/recenzirovanie/retsenziya-na-elektrotekhnicheskuyu-ekspertizu/': 'проводка электричество замыкание электросеть',
+    '/recenzirovanie/retsenziya-na-inzhenerno-tekhnicheskuyu-ekspertizu/': 'оборудование механизм поломка станок техника',
+    '/recenzirovanie/retsenziya-na-khimicheskuyu-ekspertizu/': 'химия вещество состав анализ',
+    '/recenzirovanie/retsenziya-na-ekspertizu-narkoticheskikh-sredstv/': 'наркотики наркотик масса вес 228 закладка',
+    '/recenzirovanie/retsenziya-na-ekspertizu-marikhuany-kannabisa/': 'марихуана каннабис конопля гашиш',
+    '/recenzirovanie/retsenziya-na-ekspertizu-n-metilefedrona-i-ego-proizvodnykh-pvp/': 'соль альфа pvp мефедрон метилэфедрон',
+    '/recenzirovanie/retsenziya-na-ekspertizu-metamfetamina-pervitina/': 'метамфетамин первитин',
+    '/recenzirovanie/retsenziya-na-ekspertizu-kokaina/': 'кокаин',
+    '/recenzirovanie/retsenziya-na-ekspertizu-spaysov-sinteticheskikh-kannabinoidov/': 'спайс курительная смесь синтетика',
+    '/recenzirovanie/retsenziya-na-geneticheskuyu-ekspertizu-dnk-analiza/': 'днк родство отцовство генетика',
+    '/recenzirovanie/retsenziya-na-biologicheskuyu-ekspertizu/': 'кровь волосы слюна биологические следы',
+    '/recenzirovanie/retsenziya-na-meditsinskuyu-ekspertizu/': 'врачебная ошибка вред здоровью травма медицина врач больница',
+    '/recenzirovanie/retsenziya-na-botanicheskuyu-ekspertizu/': 'растения дерево мак конопля',
+    '/recenzirovanie/retsenziya-na-pochvovedcheskuyu-ekspertizu/': 'почва грунт земля загрязнение',
+    '/recenzirovanie/retsenziya-na-ekologicheskuyu-ekspertizu/': 'экология загрязнение выбросы отходы вода'
+  };
+
+  var STOP = ('в во на и или а но не ни по о об от до из за к ко у с со мне меня мой моя мое мои мою моего наш наша наши нас вас ваш ' +
+              'что чтобы как это этот эта эти был была были было есть для при про чей чья чье чьи кто где когда мы я он она они нам их его ее ' +
+              'же ли бы то так уже очень нужна нужно нужен надо хочу можно какая какой какую').split(' ');
+  var SKIP = ['рецензи', 'эксперт', 'исследов', 'заключ', 'дел'];   /* слишком общие слова: есть почти в каждой услуге */
+
+  function norm(s) {
+    return String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/g, ' ').trim();
+  }
+  function stem(w) {
+    var n = w.length;
+    if (n >= 9) return w.slice(0, n - 3);
+    if (n >= 7) return w.slice(0, n - 2);
+    if (n >= 4) return w.slice(0, n - 1);
+    return w;
+  }
+  function stems(q) {
+    var out = [];
+    norm(q).split(' ').forEach(function (w) {
+      if (!w || STOP.indexOf(w) !== -1) return;
+      var s = stem(w);
+      if (s.length < 3) return;
+      for (var i = 0; i < SKIP.length; i++) {
+        if (s.indexOf(SKIP[i]) === 0 || SKIP[i].indexOf(s) === 0) return;
+      }
+      if (out.indexOf(s) === -1) out.push(s);
+    });
+    return out;
+  }
+
+  /* Услуги берём прямо со страницы */
+  var items = [];
+  Array.prototype.forEach.call(document.querySelectorAll('.rv-group'), function (g) {
+    var gt = g.querySelector('.rv-group__title');
+    var group = gt ? gt.textContent.trim() : '';
+    /* основные рецензии и подвиды под ними (по методу, по виду вещества и т. п.) */
+    Array.prototype.forEach.call(g.querySelectorAll('a.rv-item[href], a.rv-sub__link[href]'), function (a) {
+      var pick = function (sel) { var el = a.querySelector(sel); return el ? el.textContent.trim() : ''; };
+      var sub = a.classList.contains('rv-sub__link');
+      var href = a.getAttribute('href');
+      var name = pick(sub ? '.rv-sub__name' : '.rv-item__name');
+      items.push({
+        href: href, name: name, group: group, price: sub ? '' : pick('.rv-item__price'), sub: sub ? 1 : 0,
+        /* пробел в начале: ищем совпадение с начала слова, чтобы «чат» не находился в «печати» */
+        n: ' ' + norm(name), t: ' ' + norm(pick(sub ? '.rv-sub__tag' : '.rv-item__tags')), k: ' ' + norm(KEYS[href] || ''), g: ' ' + norm(group)
+      });
+    });
+  });
+
+  function find(st) {
+    var res = [];
+    items.forEach(function (it, idx) {
+      var hit = 0, score = 0;
+      st.forEach(function (s) {
+        s = ' ' + s;
+        var w = it.n.indexOf(s) !== -1 ? 3
+              : (it.t.indexOf(s) !== -1 || it.k.indexOf(s) !== -1) ? 2
+              : it.g.indexOf(s) !== -1 ? 1 : 0;
+        if (w) { hit++; score += w; }
+      });
+      if (hit) res.push({ it: it, hit: hit, score: score, idx: idx });
+    });
+    /* при равенстве основная рецензия выше подвида */
+    res.sort(function (a, b) { return b.hit - a.hit || b.score - a.score || a.it.sub - b.it.sub || a.idx - b.idx; });
+    /* если есть точное попадание по нескольким словам, случайные совпадения по одному слову не показываем */
+    var need = res.length ? Math.max(1, res[0].hit - 1) : 1;
+    return res.filter(function (r) { return r.hit >= need; }).slice(0, 6).map(function (r) { return r.it; });
+  }
+
+  function make(tag, cls, text) {
+    var el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (text != null) el.textContent = text;
+    return el;
+  }
+  /* Ссылка на мессенджер: при клике текст вопроса копируется, чтобы вставить его в чат */
+  function msgLink(href, text, goalName) {
+    var a = make('a', 'social-hero__link');
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'nofollow noopener';
+    a.setAttribute('data-goal', goalName);
+    a.setAttribute('data-copy', '');
+    a.appendChild(make('span', '', text));
+    return a;
+  }
+  function askText() {
+    return 'Здравствуйте! Хочу оспорить экспертизу. Ситуация: ' + input.value.trim();
+  }
+  function copyText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text); return; }
+    } catch (e) {}
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  var results = [], active = -1;
+
+  function open() { drop.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+  function close() {
+    drop.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-activedescendant');
+    active = -1;
+  }
+
+  function setActive(i) {
+    var opts = list.querySelectorAll('.rv-find__opt');
+    if (!opts.length) return;
+    active = i;
+    Array.prototype.forEach.call(opts, function (o, k) {
+      o.classList.toggle('is-active', k === active);
+      o.setAttribute('aria-selected', k === active ? 'true' : 'false');
+    });
+    input.setAttribute('aria-activedescendant', opts[active].id);
+    opts[active].scrollIntoView({ block: 'nearest' });
+  }
+  function move(d) {
+    var n = results.length;
+    if (!n) return;
+    setActive(active < 0 ? (d > 0 ? 0 : n - 1) : (active + d + n) % n);
+  }
+
+  function render() {
+    var q = input.value.trim();
+    var st = q.length >= 2 ? stems(q) : [];
+    results = [];
+    active = -1;
+    list.innerHTML = '';
+    empty.innerHTML = '';
+    foot.innerHTML = '';
+    input.removeAttribute('aria-activedescendant');
+    if (!st.length) { close(); return; }
+
+    results = find(st);
+
+    if (results.length) {
+      results.forEach(function (it, i) {
+        var a = make('a', 'rv-find__opt');
+        a.href = it.href;
+        a.id = 'rv-find-opt-' + i;
+        a.tabIndex = -1;
+        a.setAttribute('role', 'option');
+        a.setAttribute('aria-selected', 'false');
+        a.setAttribute('data-goal', 'poisk_recenzii');
+        var main = make('span', 'rv-find__opt-main');
+        main.appendChild(make('span', 'rv-find__opt-name', it.name));
+        main.appendChild(make('span', 'rv-find__opt-group', it.group));
+        a.appendChild(main);
+        if (it.price) a.appendChild(make('span', 'rv-find__opt-price', it.price));
+        list.appendChild(a);
+      });
+      foot.appendChild(document.createTextNode('Не нашли свою экспертизу? Спросите эксперта в '));
+      foot.appendChild(msgLink(MAX, 'MAX', 'max_klik'));
+      foot.appendChild(document.createTextNode(' или '));
+      foot.appendChild(msgLink(TG, 'Telegram', 'telegram_klik'));
+      foot.appendChild(make('span', 'rv-find__hint', ''));
+      list.hidden = false;
+      empty.hidden = true;
+      foot.hidden = false;
+    } else {
+      empty.appendChild(make('p', 'rv-find__empty-title', 'Точного совпадения нет'));
+      empty.appendChild(make('p', 'rv-find__empty-text', 'Опишите, какую экспертизу хотите оспорить: подскажем, можно ли сделать рецензию, сколько она займёт и сколько будет стоить.'));
+      var acts = make('div', 'rv-find__empty-actions');
+      var formBtn = make('span', 'btn btn--blue btn--sm', 'Оставить заявку');
+      formBtn.setAttribute('role', 'button');
+      formBtn.setAttribute('tabindex', '0');
+      formBtn.setAttribute('data-fancybox', '');
+      formBtn.setAttribute('data-src', '#modal-zayavka-new');
+      formBtn.setAttribute('data-goal', 'opzvon');
+      var msg = make('div', 'social-hero');
+      msg.appendChild(make('span', 'rv-msg-label', 'или напишите в'));
+      msg.appendChild(msgLink(MAX, 'MAX', 'max_klik'));
+      msg.appendChild(msgLink(TG, 'Telegram', 'telegram_klik'));
+      acts.appendChild(formBtn);
+      acts.appendChild(msg);
+      empty.appendChild(acts);
+      empty.appendChild(make('span', 'rv-find__hint', ''));
+      list.hidden = true;
+      empty.hidden = false;
+      foot.hidden = true;
+    }
+    open();
+  }
+
+  function go(i) {
+    var it = results[i];
+    if (!it) return;
+    goal('poisk_recenzii');
+    window.location.href = it.href;
+  }
+
+  input.addEventListener('input', render);
+  input.addEventListener('focus', function () {
+    twStop('Опишите свою ситуацию');
+    if (input.value.trim()) render();
+  });
+  input.addEventListener('blur', function () {
+    if (!input.value) twReset();
+  });
+  input.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowDown' || k === 'ArrowUp') {
+      if (drop.hidden) render();
+      if (results.length) { e.preventDefault(); move(k === 'ArrowDown' ? 1 : -1); }
+    } else if (k === 'Enter') {
+      e.preventDefault();
+      if (results.length && !drop.hidden) go(active >= 0 ? active : 0);
+      else render();
+    } else if (k === 'Escape') {
+      if (!drop.hidden) { e.preventDefault(); close(); }
+    }
+  });
+  btn.addEventListener('click', function () {
+    if (!input.value.trim()) { input.focus(); return; }
+    if (results.length && !drop.hidden) { go(active >= 0 ? active : 0); return; }
+    render();
+    input.focus();
+  });
+  document.addEventListener('click', function (e) {
+    if (!box.contains(e.target)) close();
+  });
+
+  /* Цели Метрики по клику, копирование вопроса для мессенджеров, клавиатура для кнопок-span */
+  hero.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-goal]') : null;
+    if (!el) return;
+    if (el.hasAttribute('data-copy') && input.value.trim()) copyText(askText());
+    goal(el.getAttribute('data-goal'));
+  });
+  hero.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if ((e.key === 'Enter' || e.key === ' ') && t.getAttribute && t.getAttribute('role') === 'button') {
+      e.preventDefault();
+      t.click();
+    }
+  });
+
+  /* Подсказка в поле сама печатает примеры ситуаций */
+  var EX = [
+    'экспертиза подписи',
+    'не согласен с оценкой',
+    'экспертиза по ДТП',
+    'давность документа',
+    'масса наркотика',
+    'спор о ребёнке'
+  ];
+  var PH = 'Например, ';
+  /* на узком экране без «Например», чтобы пример помещался целиком */
+  function prefix() {
+    var cs = window.getComputedStyle(input);
+    var room = input.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    return room > 300 ? PH : '';
+  }
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tw = { i: 0, pos: EX[0].length, dir: -1, t: null, run: false, seen: !('IntersectionObserver' in window) };
+
+  function tick() {
+    var s = EX[tw.i], wait;
+    tw.pos += tw.dir;
+    input.placeholder = prefix() + s.slice(0, tw.pos);
+    if (tw.dir > 0 && tw.pos >= s.length) { tw.dir = -1; wait = 2400; }
+    else if (tw.dir < 0 && tw.pos <= 0) { tw.dir = 1; tw.i = (tw.i + 1) % EX.length; wait = 300; }
+    else wait = tw.dir > 0 ? 45 + Math.random() * 45 : 18;
+    tw.t = setTimeout(tick, wait);
+  }
+  function twPlay() {
+    if (calm || tw.run || !tw.seen || input.value || document.activeElement === input) return;
+    tw.run = true;
+    tw.t = setTimeout(tick, 1800);
+  }
+  function twStop(ph) {
+    tw.run = false;
+    clearTimeout(tw.t);
+    if (ph) input.placeholder = ph;
+  }
+  function twReset() {
+    tw.pos = EX[tw.i].length;
+    tw.dir = -1;
+    input.placeholder = prefix() + EX[tw.i];
+    twPlay();
+  }
+
+  input.placeholder = prefix() + EX[0];
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      tw.seen = entries[0].isIntersecting;
+      if (tw.seen) twPlay(); else twStop();
+    }).observe(input);
+  } else {
+    twPlay();
+  }
+})();
+</script>
+
+
+<?php include $_SERVER['DOCUMENT_ROOT'].'/local/include/call-to-action.php';?>
+
+<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
